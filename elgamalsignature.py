@@ -6,63 +6,33 @@ from generator import generate
 from primefactorization import prime
 from alphanumeric import numeric
 from alphanumeric import alpha
+import math
 
 
 
-def setup(p,g):
-    '''Setting up Public Key'''
-   
-    print("Choose random number b")
-    b = random.randint(2,p-2)
 
-    B = sqandmult(g,b,p)
+def signing(r,k,p,g):
 
-    return B, b
+    R = random.randint(0,p-1)
 
-def encrypt(g,p,B,m):
-    '''Encryption'''
-    C =[]
+    coprime = 0
+    
+    while coprime != 1:
 
-    print("Choose random number a")
-    a = random.randint(2,p-2)
-
-    Keph = sqandmult(g,a,p)
-
-    K = sqandmult(B,a,p)
-
-    for i in m:
-        C.append((i*K)%p)
+        R = random.randint(0,p-1)
+        coprime = math.gcd(R,p-1)
+    
+    x = sqandmult(g,k,p)
     
     
-    # C = (m*K)%p
-
-    return Keph, C
-
-
-def decrypt(Keph,b,C,p):
-
-    m2 =[]
-
-    K = sqandmult(Keph,b,p)
-
-    print("This is K: ", K)
-
-
-    kinv = multinv(p,K)
-
-    for i in C:
-        m2.append((i*kinv)%p)
-    # m2 = (C*kinv)%p
-
-    return m2
-
-
+    #M =rX +RY
 
 if __name__ == '__main__':
 
     print("Choose large prime p")
     p = int(input())
 
+    
     pf = prime(p)
 
     print("input generator")
@@ -81,6 +51,22 @@ if __name__ == '__main__':
     print("GENERATOR: ", g)
     print()
 
+    r = random.randint(0,p-1)
+
+    k = sqandmult(g,r,p)
+
+    print("Input Message")
+
+    M = int(input())
+    
+    Msig = signing(r,k,p,g)
+
+
+
+
+
+
+
     B,b = setup(p,g)
 
     print("Public Key: ", p , g, B)
@@ -89,11 +75,11 @@ if __name__ == '__main__':
     print("Input Message")
     # m = int(input())
 
-    M = input()
-    OM = M
+    M = int(input())
+    # OM = M
     
-    M = numeric(M)
-    print(M)
+    # M = numeric(M)
+    # print(M)
 
     Keph, C = encrypt(g,p,B,M)
 
